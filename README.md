@@ -1,4 +1,6 @@
 # windows_exporter
+##CXZQ定制
+对process模块进行定制,通过--collector.process.include="(name1|name2).*"参数传入的关注进程名,如果不存在匹配进程时,会生成一条windows_process_threads=0的记录,以方便进行通用监控做为条件告警使用
 
 ![Build Status](https://github.com/prometheus-community/windows_exporter/workflows/windows_exporter%20CI/CD/badge.svg)
 

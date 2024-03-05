@@ -1,1 +1,1 @@
-go build -ldflags "-X 'github.com/prometheus/common/version.Version=0.25.1-lihy-threadcount0'"
+go build -ldflags "-X 'github.com/prometheus/common/version.Version=0.25.1-cxzq-0.1.0'"
