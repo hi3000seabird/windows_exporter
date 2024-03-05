@@ -1,1 +1,1 @@
-go build -ldflags "-X 'github.com/prometheus/common/version.Version=0.25.1-cxzq-0.1.0' -X 'github.com/prometheus/common/version.BuildUser=lihaiyan' -X 'github.com/prometheus/common/version.BuildDate=2024-03-05'"
+go build -ldflags "-w -s -X 'github.com/prometheus/common/version.Version=0.25.1-cxzq-0.1.0' -X 'github.com/prometheus/common/version.BuildUser=lihaiyan' -X 'github.com/prometheus/common/version.BuildDate=2024-03-05'"
