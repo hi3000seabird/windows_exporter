@@ -32,7 +32,7 @@ type Config struct {
 }
 
 var ConfigDefaults = Config{
-	ProcessInclude:      ".+",
+	ProcessInclude:      "nothing",
 	ProcessExclude:      "",
 	EnableWorkerProcess: false,
 }
@@ -274,14 +274,41 @@ func (c *collector) Collect(ctx *types.ScrapeContext, ch chan<- prometheus.Metri
 		}
 	}
 
+	//////////add by lihy 20240304
+	var monitorProcessString string = ""
+	myPattern := `\(([0-9A-Za-z\|]+)\)`
+	re := regexp.MustCompile(myPattern)
+	matches := re.FindAllStringSubmatch(*c.processInclude, -1)
+	for _, match := range matches {
+		if len(match) > 0 {
+			monitorProcessString = match[1]
+		}
+	}
+
+	var monitorProcessMap = make(map[string]int, 10)
+	for _, val := range strings.Split(monitorProcessString, "|") {
+		if len(val) > 1 {
+			monitorProcessMap[val] = 0
+		}
+
+	}
+	/////////////////////////////
+
 	for _, process := range data {
+		//////////add by lihaiyan 20240304
+		processName := strings.Split(process.Name, "#")[0]
+		value, exists := monitorProcessMap[processName]
+		if exists {
+			monitorProcessMap[processName] = value + 1
+		}
+		//////////////////////////////////////
 		if process.Name == "_Total" ||
 			c.processExcludePattern.MatchString(process.Name) ||
 			!c.processIncludePattern.MatchString(process.Name) {
 			continue
 		}
 		// Duplicate processes are suffixed # and an index number. Remove those.
-		processName := strings.Split(process.Name, "#")[0]
+		//processName := strings.Split(process.Name, "#")[0]
 		pid := strconv.FormatUint(uint64(process.IDProcess), 10)
 		cpid := strconv.FormatUint(uint64(process.CreatingProcessID), 10)
 
@@ -493,6 +520,21 @@ func (c *collector) Collect(ctx *types.ScrapeContext, ch chan<- prometheus.Metri
 			cpid,
 		)
 	}
+
+	//add by lihaiyan 20240304 没有的进程增加一个为0的Threadcount
+	for key, val := range monitorProcessMap {
+		if val == 0 {
+			ch <- prometheus.MustNewConstMetric(
+				c.ThreadCount,
+				prometheus.GaugeValue,
+				0,
+				key,
+				"0",
+				"0",
+			)
+		}
+	}
+	//////////////////////////////////////////////////////////
 
 	return nil
 }
