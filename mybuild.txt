@@ -1,1 +1,9 @@
 go build -ldflags "-w -s -X 'github.com/prometheus/common/version.Version=0.25.1-cxzq-0.1.0' -X 'github.com/prometheus/common/version.BuildUser=lihaiyan' -X 'github.com/prometheus/common/version.BuildDate=2024-03-05'"
+
+
+
+--for 32 bit
+--in cmd mode
+set GOARCH=386
+go build -ldflags "-w -s -o windows_exporter-0.25.1-cxzq-0.1.1-386.exe -X 'github.com/prometheus/common/version.Version=0.25.1-cxzq-0.1.1-386' -X 'github.com/prometheus/common/version.BuildUser=lihaiyan' -X 'github.com/prometheus/common/version.BuildDate=2024-04-11'"
+
